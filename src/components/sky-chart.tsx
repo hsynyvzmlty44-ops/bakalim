@@ -195,10 +195,10 @@ export function SkyChart({ ambient = false }: { ambient?: boolean }) {
       context.setTransform(dpr, 0, 0, dpr, 0, 0);
       const center = size / 2;
       const horizon = size * 0.455;
-      const visible: VisibleStar[] = positioned.map(({ star, altitude, azimuth }) => {
+      const visible: VisibleStar[] = positioned.map(({ star, altitude, azimuth, apparentRaHours, apparentDecDegrees }) => {
         const radius = (90 - altitude) / 90;
         const angle = azimuth * Math.PI / 180;
-        return { ...star, altitude, azimuth, x: center + Math.sin(angle) * radius * horizon * zoom, y: center - Math.cos(angle) * radius * horizon * zoom };
+        return { ...star, altitude, azimuth, apparentRaHours, apparentDecDegrees, x: center + Math.sin(angle) * radius * horizon * zoom, y: center - Math.cos(angle) * radius * horizon * zoom };
       });
       visibleRef.current = visible;
       setVisibleCount(visible.length);
