@@ -11,7 +11,7 @@ export function BackgroundOrbs() {
     >
       <div
         className={cn(
-          "absolute h-[min(78vw,520px)] w-[min(78vw,520px)] rounded-full bg-[#C8A2C8] opacity-[0.35] sm:h-[min(85vw,640px)] sm:w-[min(85vw,640px)] md:h-[min(88vw,720px)] md:w-[min(88vw,720px)]",
+          "absolute h-[min(78vw,520px)] w-[min(78vw,520px)] rounded-full bg-[#c9a7f5] opacity-[0.35] sm:h-[min(85vw,640px)] sm:w-[min(85vw,640px)] md:h-[min(88vw,720px)] md:w-[min(88vw,720px)]",
           "blur-[120px] md:blur-[150px]",
           "float-orb-a -left-[15%] -top-[20%]"
         )}

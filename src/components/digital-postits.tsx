@@ -385,7 +385,7 @@ export function DigitalPostits({
                 key={cid}
                 type="button"
                 onClick={() => addNoteWithColor(cid)}
-                className="rounded-lg p-0.5 ring-2 ring-transparent transition hover:ring-[#C8A2C8]/80 focus:outline-none focus:ring-[#C8A2C8]"
+                className="rounded-lg p-0.5 ring-2 ring-transparent transition hover:ring-[#c9a7f5]/80 focus:outline-none focus:ring-[#c9a7f5]"
                 title={POSTIT_COLOR_LABELS[cid]}
               >
                 <span
@@ -402,7 +402,7 @@ export function DigitalPostits({
           type="button"
           onClick={() => setPaletteOpen((o) => !o)}
           disabled={!ready}
-          className="pointer-events-auto flex items-center gap-2 rounded-full border border-[#C8A2C8]/50 bg-[#C8A2C8]/25 px-4 py-2.5 text-sm font-medium text-[#f5f0ff] shadow-lg backdrop-blur-md transition hover:bg-[#C8A2C8]/40 disabled:opacity-50"
+          className="pointer-events-auto flex items-center gap-2 rounded-full border border-[#c9a7f5]/50 bg-[#c9a7f5]/25 px-4 py-2.5 text-sm font-medium text-[#f5f0ff] shadow-lg backdrop-blur-md transition hover:bg-[#c9a7f5]/40 disabled:opacity-50"
         >
           <StickyNote className="h-4 w-4 shrink-0" aria-hidden />
           {paletteOpen ? "Renk seç…" : "Not ekle"}

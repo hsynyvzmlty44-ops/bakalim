@@ -5,11 +5,13 @@ import { AlbumCorner } from "@/components/album-corner";
 import { BizCounter } from "@/components/biz-counter";
 import { CoupleTodoList } from "@/components/couple-todo-list";
 import { DigitalPostits } from "@/components/digital-postits";
-import { FloatingHearts } from "@/components/floating-hearts";
-import { cn } from "@/lib/utils";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { SkyChart } from "@/components/sky-chart";
+import { LetterSection } from "@/components/letter-section";
+import { MemoriesSection } from "@/components/memories-section";
+import { Sparkles } from "lucide-react";
 
 export default async function DashboardPage() {
   const cookieStore = await cookies();
@@ -32,7 +34,6 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <FloatingHearts />
       {localOk && !user ? (
         <div
           className="pointer-events-none fixed left-0 right-0 top-0 z-[60] flex justify-center px-4 pt-3"
@@ -49,42 +50,29 @@ export default async function DashboardPage() {
           </p>
         </div>
       ) : null}
-      <AlbumCorner useCloudSync={Boolean(user)} />
-      <div className="relative w-full self-stretch">
-        <DigitalPostits
-          userEmail={user?.email ?? null}
-          localSession={localOk}
-        />
-        <div className="relative z-10 mx-auto flex w-full max-w-2xl flex-col items-stretch gap-6 sm:gap-8 md:max-w-3xl md:gap-10 lg:max-w-4xl lg:gap-12">
-          <div
-            className={cn(
-              "rounded-[2rem] border border-white/10 bg-white/5 p-6 text-center shadow-2xl backdrop-blur-2xl sm:rounded-[2.25rem] sm:p-8 md:rounded-[2.5rem] md:p-10 lg:p-12"
-            )}
-          >
-            <BizCounter />
-
-            <form action={logout} className="mt-10">
-              <button
-                type="submit"
-                className="text-sm text-[#C8A2C8] underline-offset-2 hover:underline"
-              >
-                Çıkış
-              </button>
-            </form>
-
-            <p className="mt-6">
-              <Link
-                href="/"
-                className="text-xs text-white/35 transition hover:text-white/55"
-              >
-                Ana sayfa
-              </Link>
-            </p>
-          </div>
-
-          <CoupleTodoList useCloudSync={Boolean(user)} />
+      <AlbumCorner useCloudSync={Boolean(user)} showLauncher={false} />
+      <main className="story-shell">
+        <div className="postit-layer">
+          <DigitalPostits userEmail={user?.email ?? null} localSession={localOk} />
         </div>
-      </div>
+        <header className="story-nav">
+          <Link href="/dashboard" className="site-brand"><Sparkles size={16} /> Bakalım, birlikte</Link>
+          <nav aria-label="Anı defteri bölümleri"><a href="#home">Ana Sayfa</a><a href="#memories">Anılar</a><a href="#sky">Gökyüzümüz</a><a href="#letter">Mektubum</a></nav>
+        </header>
+        <section className="story-hero" id="home">
+          <div className="story-hero-copy"><p className="eyebrow">11 ŞUBAT 2026’DAN BERİ</p><h1>Bir “bakalım”la<br />başlayan hikâyemiz.</h1><p className="landing-subtitle">Birbirimize bakmayı, anlamayı ve acele etmeden birlikte büyümeyi seçtiğimiz her gün…</p>
+            <div className="counter-card"><p className="card-kicker">Sonsuzluğa doğru, her saniye birlikte</p><BizCounter /></div>
+          </div>
+          <span className="hero-moon" aria-hidden="true">☾</span><span className="hero-star hero-star-one" aria-hidden="true">✦</span><span className="hero-star hero-star-two" aria-hidden="true">✧</span>
+        </section>
+        <section className="memory-grid" id="memories">
+          <MemoriesSection />
+          <div className="memory-card plans-card"><p className="eyebrow">SIRADAKİ GÜZEL ŞEYLER</p><h2>Planlarımız</h2><p>Daha keşfedecek çok şey var.</p><CoupleTodoList useCloudSync={Boolean(user)} /></div>
+        </section>
+        <SkyChart />
+        <LetterSection />
+        <footer className="site-footer">Aynı gökyüzü, hep bizimle… <span>✦</span><form action={logout}><button type="submit" className="logout-link">Çıkış</button></form></footer>
+      </main>
     </>
   );
 }

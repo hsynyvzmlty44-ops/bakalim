@@ -1,11 +1,7 @@
-import { LoginForm } from "@/app/login/login-form";
-import { FloatingHearts } from "@/components/floating-hearts";
+import { LoginScreen } from "@/components/login-screen";
 
 export default function LoginPage() {
   return (
-    <>
-      <FloatingHearts />
-      <LoginForm />
-    </>
+    <LoginScreen />
   );
 }

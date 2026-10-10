@@ -1,0 +1,4 @@
+Star data: HYG Database v4.1 (compiled by David Nash / astronexus)
+Source: https://github.com/astronexus/HYG-Database
+License: Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+This project includes only rows with apparent visual magnitude <= 6.0 and the fields required to render the historical sky chart.

@@ -1,11 +1,7 @@
-import { FloatingHearts } from "@/components/floating-hearts";
-import { WelcomeCard } from "@/components/welcome-card";
+import { LoginScreen } from "@/components/login-screen";
 
 export default function Home() {
   return (
-    <>
-      <FloatingHearts />
-      <WelcomeCard />
-    </>
+    <LoginScreen />
   );
 }

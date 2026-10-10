@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Geist, Geist_Mono } from "next/font/google";
-import { BackgroundOrbs } from "@/components/background-orbs";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -23,18 +22,18 @@ const poemSerif = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "bakalım",
-  description: "Modern Lila & Glassmorphism",
+  title: "Bakalım, birlikte — Hikâyemiz",
+  description: "Bir bakalım’la başlayan, birlikte büyüyen hikâyemiz.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "bakalım",
+    title: "Bakalım, birlikte",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#C8A2C8",
+  themeColor: "#101925",
 };
 
 export default function RootLayout({
@@ -48,8 +47,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${poemSerif.variable} h-full antialiased`}
     >
       <body className="relative min-h-screen min-h-[100dvh] bg-[#0F172A] font-sans text-slate-100">
-        <BackgroundOrbs />
-        <div className="relative z-10 flex min-h-screen min-h-[100dvh] w-full flex-col items-center justify-center px-4 py-8 pt-[max(2rem,env(safe-area-inset-top))] pb-[max(2rem,env(safe-area-inset-bottom))] sm:px-6 sm:py-10 md:px-8 md:py-12 lg:px-12 lg:py-14">
+        <div className="relative z-10 flex min-h-screen min-h-[100dvh] w-full flex-col items-stretch justify-start">
           {children}
         </div>
       </body>

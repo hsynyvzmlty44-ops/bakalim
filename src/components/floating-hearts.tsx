@@ -37,7 +37,7 @@ export function FloatingHearts() {
       {hearts.map((h) => (
         <div
           key={h.id}
-          className="heart-rise absolute bottom-0 text-[#C8A2C8]"
+          className="heart-rise absolute bottom-0 text-[#c9a7f5]"
           style={{
             left: h.left,
             animationDelay: h.delay,

@@ -17,9 +17,9 @@ import { useState } from "react";
 const easeOutBezier = [0.22, 1, 0.36, 1] as const;
 
 const inputClass = cn(
-  "w-full border-0 border-b border-white/25 bg-transparent pb-2.5 text-base text-white placeholder:text-white/50",
+  "w-full border-0 border-b border-[#c9a7f5]/35 bg-transparent pb-2.5 text-base text-[#fff8ef] placeholder:text-white/45",
   "outline-none transition-[border-color,box-shadow]",
-  "focus:border-[#C8A2C8] focus:shadow-[0_4px_24px_-8px_rgba(200,162,200,0.55)]"
+  "focus:border-[#c9a7f5] focus:shadow-[0_4px_24px_-8px_rgba(201,167,245,0.45)]"
 );
 
 export function LoginForm() {
@@ -28,23 +28,36 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [usernameError, setUsernameError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [localFallbackAvailable, setLocalFallbackAvailable] = useState(false);
+
+  function continueOnThisDevice() {
+    setLocalSessionCookieClient();
+    router.refresh();
+    router.replace("/dashboard");
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    setUsernameError(null);
+    setPasswordError(null);
+    setLocalFallbackAvailable(false);
     const u = username.trim();
+    if (!u) setUsernameError("Aramızdaki o kelimeyi hatırla…");
+    if (!password) setPasswordError("Kalbine bir daha bak…");
     if (!u || !password) {
-      setError("Kullanıcı adı ve şifre gerekli.");
       return;
     }
 
     const allowedUser = resolveAllowedLoginUsername(u);
     if (!allowedUser) {
-      setError("Bu kelime bizi anlatmıyor");
+      setUsernameError("Aramızdaki o kelimeyi hatırla…");
       return;
     }
     if (password !== COUPLE_LOGIN_PASSWORD) {
-      setError("Boynundaki kalbe bir daha bak");
+      setPasswordError("Kalbine bir daha bak…");
       return;
     }
 
@@ -70,14 +83,8 @@ export function LoginForm() {
 
       if (signError) {
         setLoading(false);
-        setError(
-          [
-            "Bulut hesabına girilemedi; anılar/yapılacaklar diğer cihazda görünmez.",
-            `Hata: ${signError.message}`,
-            `Olması gereken e-posta: ${email}`,
-            "Çözüm: PC’de .env.local + SUPABASE_SERVICE_ROLE_KEY ile `npm run supabase:create-user` — veya Supabase → Authentication’da bu e-postayla kullanıcı aç; şifre `login-password.ts` içindeki çift şifresiyle aynı olsun.",
-          ].join("\n")
-        );
+        setError("Bulut eşitlemesine şu anda ulaşılamadı. Bağlantını kontrol edip yeniden deneyebilir veya bu cihazda devam edebilirsin.");
+        setLocalFallbackAvailable(true);
         return;
       }
 
@@ -86,12 +93,9 @@ export function LoginForm() {
       setLoading(false);
       router.refresh();
       router.replace("/dashboard");
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Bir bağlantı hatası oluştu."
-      );
+    } catch {
+      setError("Giriş tamamlanamadı. Bağlantını kontrol edip yeniden deneyebilir veya bu cihazda devam edebilirsin.");
+      setLocalFallbackAvailable(true);
       setLoading(false);
     }
   }
@@ -104,9 +108,7 @@ export function LoginForm() {
         y: 0,
         transition: { duration: 0.45, ease: [...easeOutBezier] },
       }}
-      className={cn(
-        "relative z-10 w-full max-w-[min(100%,28rem)] rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-2xl sm:max-w-md sm:rounded-[2.25rem] sm:p-8 md:max-w-lg md:rounded-[2.5rem] md:p-10 lg:max-w-xl lg:p-12"
-      )}
+      className="login-form-frame"
     >
       <form onSubmit={(e) => void onSubmit(e)} className="space-y-6">
         <div>
@@ -122,11 +124,17 @@ export function LoginForm() {
             type="text"
             autoComplete="username"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => {
+              setUsername(e.target.value);
+              setUsernameError(null);
+            }}
             disabled={loading}
             className={inputClass}
+            aria-invalid={Boolean(usernameError)}
+            aria-describedby={usernameError ? "username-error" : undefined}
             placeholder="aramızdaki o kelime"
           />
+          {usernameError && <p id="username-error" className="login-field-error" role="alert">{usernameError}</p>}
         </div>
         <div>
           <label
@@ -141,16 +149,22 @@ export function LoginForm() {
             type="password"
             autoComplete="current-password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setPasswordError(null);
+            }}
             disabled={loading}
             className={inputClass}
+            aria-invalid={Boolean(passwordError)}
+            aria-describedby={passwordError ? "password-error" : undefined}
             placeholder="kalbindeki tarih"
           />
+          {passwordError && <p id="password-error" className="login-field-error" role="alert">{passwordError}</p>}
         </div>
 
         {error && (
           <p
-            className="whitespace-pre-line text-center text-sm leading-relaxed text-rose-200/95"
+            className="login-error"
             role="alert"
           >
             {error}
@@ -164,8 +178,8 @@ export function LoginForm() {
           whileTap={{ scale: loading ? 1 : 0.98 }}
           className={cn(
             "flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-sm font-semibold text-[#0F172A] sm:py-4 sm:text-base",
-            "bg-gradient-to-r from-[#C8A2C8] via-[#d4b8e8] to-[#e9d5ff]",
-            "shadow-lg transition-shadow hover:shadow-[0_0_20px_rgba(200,162,200,0.45)]",
+            "bg-gradient-to-r from-[#c9a7f5] via-[#eadbff] to-[#a98ad4]",
+            "shadow-lg transition-shadow hover:shadow-[0_0_20px_rgba(201,167,245,0.35)]",
             "disabled:opacity-70"
           )}
         >
@@ -182,6 +196,7 @@ export function LoginForm() {
           )}
         </motion.button>
       </form>
+      {localFallbackAvailable && <button type="button" className="local-fallback" onClick={continueOnThisDevice}>Bu cihazda devam et</button>}
     </motion.div>
   );
 }

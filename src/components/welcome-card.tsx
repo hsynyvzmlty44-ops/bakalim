@@ -55,8 +55,8 @@ export function WelcomeCard() {
         }}
         className={cn(
           "inline-flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-sm font-semibold text-[#0F172A] sm:py-4 sm:text-base",
-          "bg-gradient-to-r from-[#C8A2C8] via-[#d4b8e8] to-[#e9d5ff]",
-          "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C8A2C8]"
+          "bg-gradient-to-r from-[#c9a7f5] via-[#d4b8e8] to-[#e9d5ff]",
+          "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c9a7f5]"
         )}
       >
         Başla
