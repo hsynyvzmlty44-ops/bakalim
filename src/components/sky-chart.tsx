@@ -219,8 +219,7 @@ export function SkyChart({ ambient = false }: { ambient?: boolean }) {
           </div>
         );
       })()}
-      <p className="sky-caption">HYG 4.1 kataloğunun çıplak göz sınırındaki (+6 kadir) yıldızları; özdevinim, presesyon ve yerel yıldız zamanı ile bu tarih ve konuma taşındı. Bir yıldıza dokunarak gökyüzündeki konumunu görebilirsin.</p>
-      <a className="catalog-credit" href="https://github.com/astronexus/HYG-Database" target="_blank" rel="noreferrer">HYG 4.1 · CC BY-SA 4.0 · Katalog kaynağı</a>
+      <p className="sky-caption">Bir yıldıza dokun yavrum</p>
     </section>
   );
 }
