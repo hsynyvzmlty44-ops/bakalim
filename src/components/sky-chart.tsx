@@ -220,6 +220,10 @@ export function SkyChart({ ambient = false }: { ambient?: boolean }) {
         );
       })()}
       <p className="sky-caption">Bir yıldıza dokun yavrum</p>
+      <details className="sky-caption sky-preparation-note">
+        <summary>Bu haritayı nasıl hazırladım?</summary>
+        <p>“11 Şubat 2026, saat 21.35’te, tanıştığımız yerde gökyüzünün nasıl göründüğünü bulmak için yıldızları tek tek o ana taşıdım. Bu haritadaki her nokta, o gecenin gerçek gökyüzünden.”</p>
+      </details>
     </section>
   );
 }
