@@ -456,3 +456,16 @@ body { background: #101925; color: #f7f0e8; font-family: var(--font-poem), Georg
   .sky-detail-grid > div { padding:.5rem; }
   .sky-detail-grid strong { font-size:.7rem; }
 }
+
+.presence-panel { margin:1rem auto; width:calc(100% - 2.5rem); max-width:960px; border:1px solid #c9a7f53d; border-radius:18px; padding:1.1rem 1.4rem; background:#171d2c; color:#e7dcf1; }
+.presence-account { color:#c4abd9; font-size:.8rem; margin-bottom:.45rem; }
+.presence-panel h2 { margin:0 0 .5rem; font-size:1.35rem; font-weight:500; }
+.presence-panel p { margin:.6rem 0; line-height:1.5; }
+.presence-panel .presence-note { color:#c3b5cf; font-size:.8rem; }
+.presence-current { display:flex; align-items:center; gap:.5rem; font-size:1.15rem; }
+.presence-dot { display:inline-block; width:10px; height:10px; border-radius:50%; background:#8c8397; }
+.presence-dot.is-online { background:#7bdfae; box-shadow:0 0 12px #7bdfae55; }
+.presence-panel dl { display:flex; flex-wrap:wrap; gap:.8rem 2.5rem; margin:.7rem 0; }
+.presence-panel dt { color:#b9a7cc; font-size:.8rem; }
+.presence-panel dd { margin:.2rem 0 0; }
+.presence-error { color:#ffc4cc; }

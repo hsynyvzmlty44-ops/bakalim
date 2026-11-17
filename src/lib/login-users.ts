@@ -1,5 +1,5 @@
 /**
- * Tek ortak giriş — kullanıcı adı .env ile değiştirilebilir (varsayılan: bakalım).
+ * İki ayrı giriş — kullanıcı adı .env ile değiştirilebilir (varsayılan: bakalım).
  */
 export function allowedLoginUsername(): string {
   return (
@@ -21,6 +21,7 @@ function foldUsernameForCompare(s: string): string {
 export function resolveAllowedLoginUsername(input: string): string | null {
   const u = input.trim();
   if (!u) return null;
+  if (foldUsernameForCompare(u) === "bakalim2") return "bakalım2";
   const allowed = allowedLoginUsername();
   if (foldUsernameForCompare(u) === foldUsernameForCompare(allowed)) {
     return allowed;
