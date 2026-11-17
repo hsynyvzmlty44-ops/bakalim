@@ -4,7 +4,6 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { AlbumCorner } from "@/components/album-corner";
 import { BizCounter } from "@/components/biz-counter";
 import { CoupleTodoList } from "@/components/couple-todo-list";
-import { DigitalPostits } from "@/components/digital-postits";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -52,9 +51,6 @@ export default async function DashboardPage() {
       ) : null}
       <AlbumCorner useCloudSync={Boolean(user)} showLauncher={false} />
       <main className="story-shell">
-        <div className="postit-layer">
-          <DigitalPostits userEmail={user?.email ?? null} localSession={localOk} />
-        </div>
         <header className="story-nav">
           <Link href="/dashboard" className="site-brand"><Sparkles size={16} /> Bakalım, birlikte</Link>
           <nav aria-label="Anı defteri bölümleri"><a href="#home">Ana Sayfa</a><a href="#memories">Anılar</a><a href="#sky">Gökyüzümüz</a><a href="#letter">Mektubum</a></nav>
@@ -70,7 +66,7 @@ export default async function DashboardPage() {
           <div className="memory-card plans-card"><p className="eyebrow">SIRADAKİ GÜZEL ŞEYLER</p><h2>Planlarımız</h2><p>Daha keşfedecek çok şey var.</p><CoupleTodoList useCloudSync={Boolean(user)} /></div>
         </section>
         <SkyChart />
-        <LetterSection />
+        <LetterSection useCloudSync={Boolean(user)} />
         <footer className="site-footer">Aynı gökyüzü, hep bizimle… <span>✦</span><form action={logout}><button type="submit" className="logout-link">Çıkış</button></form></footer>
       </main>
     </>
