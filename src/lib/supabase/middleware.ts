@@ -1,4 +1,3 @@
-import { LOCAL_SESSION_COOKIE, LOCAL_SESSION_VALUE } from "@/lib/local-auth";
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
@@ -8,19 +7,12 @@ export async function updateSession(request: NextRequest) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  const localSession =
-    request.cookies.get(LOCAL_SESSION_COOKIE)?.value === LOCAL_SESSION_VALUE;
 
   if (!url || !key) {
     const path = request.nextUrl.pathname;
-    if (path.startsWith("/dashboard") && !localSession) {
+    if (path.startsWith("/dashboard")) {
       const u = request.nextUrl.clone();
       u.pathname = "/login";
-      return NextResponse.redirect(u);
-    }
-    if (path.startsWith("/login") && localSession) {
-      const u = request.nextUrl.clone();
-      u.pathname = "/dashboard";
       return NextResponse.redirect(u);
     }
     return response;
@@ -47,13 +39,13 @@ export async function updateSession(request: NextRequest) {
 
   const path = request.nextUrl.pathname;
 
-  if (path.startsWith("/dashboard") && !user && !localSession) {
+  if (path.startsWith("/dashboard") && !user) {
     const u = request.nextUrl.clone();
     u.pathname = "/login";
     return NextResponse.redirect(u);
   }
 
-  if (path.startsWith("/login") && (user || localSession)) {
+  if (path.startsWith("/login") && user) {
     const u = request.nextUrl.clone();
     u.pathname = "/dashboard";
     return NextResponse.redirect(u);

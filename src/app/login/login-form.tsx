@@ -1,11 +1,9 @@
 "use client";
 
 import { usernameToEmail } from "@/lib/auth-helpers";
-import { COUPLE_LOGIN_PASSWORD } from "@/lib/login-password";
 import { resolveAllowedLoginUsername } from "@/lib/login-users";
 import {
   clearLocalSessionCookieClient,
-  setLocalSessionCookieClient,
 } from "@/lib/local-auth";
 import { cn } from "@/lib/utils";
 import { createBrowserSupabaseClient } from "@/lib/supabase";
@@ -30,20 +28,12 @@ export function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const [usernameError, setUsernameError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [localFallbackAvailable, setLocalFallbackAvailable] = useState(false);
-
-  function continueOnThisDevice() {
-    setLocalSessionCookieClient();
-    router.refresh();
-    router.replace("/dashboard");
-  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setUsernameError(null);
     setPasswordError(null);
-    setLocalFallbackAvailable(false);
     const u = username.trim();
     if (!u) setUsernameError("Aramızdaki o kelimeyi hatırla…");
     if (!password) setPasswordError("Kalbine bir daha bak…");
@@ -56,46 +46,32 @@ export function LoginForm() {
       setUsernameError("Aramızdaki o kelimeyi hatırla…");
       return;
     }
-    if (password !== COUPLE_LOGIN_PASSWORD) {
-      setPasswordError("Kalbine bir daha bak…");
-      return;
-    }
-
     setLoading(true);
     const email = usernameToEmail(allowedUser);
 
     try {
-      let supabase;
-      try {
-        supabase = createBrowserSupabaseClient();
-      } catch {
-        setLocalSessionCookieClient();
-        setLoading(false);
-        router.refresh();
-        router.replace("/dashboard");
-        return;
-      }
+      const supabase = createBrowserSupabaseClient();
 
       const { error: signError } = await supabase.auth.signInWithPassword({
         email,
-        password: COUPLE_LOGIN_PASSWORD,
+        password,
       });
 
       if (signError) {
         setLoading(false);
-        setError("Bulut eşitlemesine şu anda ulaşılamadı. Bağlantını kontrol edip yeniden deneyebilir veya bu cihazda devam edebilirsin.");
-        setLocalFallbackAvailable(true);
+        setError("Giriş yapılamadı. Kullanıcı adını, şifreni ve bağlantını kontrol edip yeniden dene.");
         return;
       }
 
       clearLocalSessionCookieClient();
       await supabase.auth.getSession();
+      // The database records this only for the consenting subject account.
+      await supabase.rpc("record_presence_login");
       setLoading(false);
       router.refresh();
       router.replace("/dashboard");
     } catch {
-      setError("Giriş tamamlanamadı. Bağlantını kontrol edip yeniden deneyebilir veya bu cihazda devam edebilirsin.");
-      setLocalFallbackAvailable(true);
+      setError("Giriş tamamlanamadı. Bağlantını kontrol edip yeniden deneyebilirsin.");
       setLoading(false);
     }
   }
@@ -196,7 +172,6 @@ export function LoginForm() {
           )}
         </motion.button>
       </form>
-      {localFallbackAvailable && <button type="button" className="local-fallback" onClick={continueOnThisDevice}>Bu cihazda devam et</button>}
     </motion.div>
   );
 }

@@ -33,8 +33,11 @@ export async function fetchLetterRemote(client: SupabaseClient): Promise<Letter 
 export async function saveLetterRemote(client: SupabaseClient, letter: Letter): Promise<Letter> {
   const { data: { user }, error: authError } = await client.auth.getUser();
   if (authError || !user) throw authError ?? new Error("Oturum bulunamadı.");
+  const { data: account, error: accountError } = await client.from("couple_accounts")
+    .select("letter_owner_id").eq("user_id", user.id).single();
+  if (accountError || !account) throw accountError ?? new Error("Ortak hesap bulunamadı.");
   const { data, error } = await client.from("couple_letters").upsert({
-    user_id: user.id,
+    user_id: account.letter_owner_id,
     greeting: letter.greeting,
     content: letter.content,
     updated_at: new Date().toISOString(),
