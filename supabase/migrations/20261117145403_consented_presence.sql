@@ -74,3 +74,34 @@ with check(user_id=(select letter_owner_id from public.couple_accounts where use
 create policy couple_letters_update on public.couple_letters for update to authenticated
 using(user_id=(select letter_owner_id from public.couple_accounts where user_id=(select auth.uid())))
 with check(user_id=(select letter_owner_id from public.couple_accounts where user_id=(select auth.uid())));
+
+-- An explicitly shared, short-lived location snapshot; no route history.
+create table public.couple_location (
+  user_id uuid primary key references public.couple_accounts(user_id) on delete cascade,
+  latitude double precision check(latitude between -90 and 90),
+  longitude double precision check(longitude between -180 and 180),
+  accuracy double precision check(accuracy >= 0 and accuracy < 'Infinity'::float8),
+  shared_at timestamptz,
+  expires_at timestamptz,
+  check ((latitude is null and longitude is null and accuracy is null and shared_at is null and expires_at is null)
+    or (latitude is not null and longitude is not null and accuracy is not null and shared_at is not null and expires_at is not null and expires_at <= shared_at + interval '15 minutes'))
+);
+insert into public.couple_location(user_id) select user_id from public.couple_accounts where account_role='subject';
+alter table public.couple_location enable row level security;
+revoke all on public.couple_location from public,anon,authenticated;
+grant select,update on public.couple_location to authenticated;
+create policy location_snapshot_read on public.couple_location for select to authenticated using (
+ user_id=(select auth.uid()) or (expires_at > now() and exists(select 1 from public.couple_accounts where user_id=(select auth.uid()) and account_role='viewer'))
+);
+create policy location_snapshot_update on public.couple_location for update to authenticated
+using(user_id=(select auth.uid())) with check(user_id=(select auth.uid()));
+create function public.share_location_snapshot(lat double precision, lng double precision, accuracy_m double precision)
+returns setof public.couple_location language sql security invoker set search_path='' as $$
+ update public.couple_location set latitude=lat,longitude=lng,accuracy=accuracy_m,shared_at=now(),expires_at=now()+interval '15 minutes'
+ where user_id=(select auth.uid()) returning *;
+$$;
+create function public.clear_location_snapshot() returns void language sql security invoker set search_path='' as $$
+ update public.couple_location set latitude=null,longitude=null,accuracy=null,shared_at=null,expires_at=null where user_id=(select auth.uid());
+$$;
+revoke all on function public.share_location_snapshot(double precision,double precision,double precision),public.clear_location_snapshot() from public,anon;
+grant execute on function public.share_location_snapshot(double precision,double precision,double precision),public.clear_location_snapshot() to authenticated;

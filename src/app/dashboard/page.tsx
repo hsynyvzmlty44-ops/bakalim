@@ -1,6 +1,7 @@
 import { logout } from "@/app/dashboard/actions";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { AlbumCorner } from "@/components/album-corner";
+import { LocationPanel } from "@/components/location-panel";
 import { PresencePanel } from "@/components/presence-panel";
 import { BizCounter } from "@/components/biz-counter";
 import { CoupleTodoList } from "@/components/couple-todo-list";
@@ -38,6 +39,7 @@ export default async function DashboardPage() {
           <nav aria-label="Anı defteri bölümleri"><a href="#home">Ana Sayfa</a><a href="#memories">Anılar</a><a href="#sky">Gökyüzümüz</a><a href="#letter">Mektubum</a></nav>
         </header>
         <PresencePanel role={account.account_role} loginName={account.login_name} />
+        <LocationPanel role={account.account_role} />
         <section className="story-hero" id="home">
           <div className="story-hero-copy"><p className="eyebrow">11 ŞUBAT 2026’DAN BERİ</p><h1>Bir “bakalım”la<br />başlayan hikâyemiz.</h1><p className="landing-subtitle">Birbirimize bakmayı, anlamayı ve acele etmeden birlikte büyümeyi seçtiğimiz her gün…</p>
             <div className="counter-card"><p className="card-kicker">Sonsuzluğa doğru, her saniye birlikte</p><BizCounter /></div>
